@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stomped</title>
+    <style>
+        /* General Aesthetic */
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Courier New', Courier, monospace; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        /* Profile Card */
+        .card { 
+            text-align: center; 
+            border: 1px solid #222; 
+            padding: 40px; 
+            border-radius: 8px; 
+            width: 320px; 
+            background: #050505;
+        }
+
+        #pfp { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 50%; 
+            border: 1px solid #333; 
+            margin-bottom: 20px; 
+        }
+
+        h2 { margin: 10px 0; font-size: 20px; }
+
+        /* Status Indicator */
+        .status-container { margin-bottom: 20px; font-size: 13px; color: #888; }
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .online { background-color: #43b581; box-shadow: 0 0 8px #43b581; }
+        .offline { background-color: #747f8d; }
+        .dnd { background-color: #f04747; }
+        .idle { background-color: #faa61a; }
+
+        /* Links */
+        .links a { 
+            display: block; 
+            color: #fff; 
+            text-decoration: none; 
+            margin: 12px 0; 
+            padding: 12px; 
+            border: 1px solid #222; 
+            transition: 0.3s; 
+            font-size: 14px;
+        }
+
+        .links a:hover { 
+            background: #fff; 
+            color: #000; 
+            border-color: #fff; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <img id="pfp" src="" alt="PFP">
+    <h2 id="username">Loading...</h2>
+    <div class="status-container">
+        <span id="status-dot" class="status-dot"></span> 
+        <span id="status-text">Connecting...</span>
+    </div>
+    
+    <div class="links">
+        <a href="https://feds.lol/stomped" target="_blank">feds.lol/stomped</a>
+        <a id="discord-link" href="#" target="_blank">Discord: Loading...</a>
+    </div>
+</div>
+
+<script>
+    const userID = "1099030510484856842";
+    
+    fetch(`https://api.lanyard.rest/v1/users/${userID}`)
+        .then(res => res.json())
+        .then(data => {
+            const u = data.data.discord_user;
+            const s = data.data.discord_status;
+            
+            // Set PFP, Name, and Status
+            document.getElementById('pfp').src = `https://cdn.discordapp.com/avatars/${userID}/${u.avatar}.png?size=256`;
+            document.getElementById('username').innerText = u.username;
+            document.getElementById('status-text').innerText = s.toUpperCase();
+            document.getElementById('status-dot').className = `status-dot ${s}`;
+            document.getElementById('discord-link').innerText = `Discord: ${u.username}`;
+            document.getElementById('discord-link').href = `https://discord.com/users/${userID}`;
+        })
+        .catch(err => {
+            console.error("Error fetching data:", err);
+            document.getElementById('status-text').innerText = "OFFLINE";
+        });
+</script>
+</body>
+</html>
